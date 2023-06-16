@@ -1,4 +1,4 @@
-import type { AfterViewInit } from '@angular/core';
+import type { AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import {
     Component,
     ElementRef,
@@ -7,6 +7,8 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
+import type { HotkeyLayer } from '../../services/hotkeys.service';
+import { Hotkey, HotkeysService } from '../../services/hotkeys.service';
 
 interface Option {
     name: string;
@@ -20,7 +22,9 @@ interface Option {
     templateUrl: './searchable-dropdown.component.html',
     styleUrls: ['./searchable-dropdown.component.scss'],
 })
-export class SearchableDropdownComponent implements AfterViewInit {
+export class SearchableDropdownComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @Input()
     public options: Option[] = [];
 
@@ -33,14 +37,38 @@ export class SearchableDropdownComponent implements AfterViewInit {
         );
     }
 
+    private hotkeyLayer!: HotkeyLayer;
+    private readonly upHotkey = new Hotkey('ArrowUp', false, () =>
+        this.decreaseSelectedIndex()
+    );
+    private readonly downHotkey = new Hotkey('ArrowDown', false, () =>
+        this.increaseSelectedIndex()
+    );
+    private readonly confirmHotkey = new Hotkey('Enter', false, () =>
+        this.confirmSelection()
+    );
+
     @Output()
     public readonly selected: EventEmitter<string> = new EventEmitter();
 
     @ViewChild('searchInput')
     private readonly searchInput!: ElementRef;
 
+    constructor(private readonly hotkeysService: HotkeysService) {}
+
+    ngOnInit() {
+        this.hotkeyLayer = this.hotkeysService.createLayer(true);
+        this.hotkeyLayer.addHotkey(this.upHotkey);
+        this.hotkeyLayer.addHotkey(this.downHotkey);
+        this.hotkeyLayer.addHotkey(this.confirmHotkey);
+    }
+
     ngAfterViewInit() {
         this.searchInput.nativeElement.focus();
+    }
+
+    ngOnDestroy(): void {
+        this.hotkeysService.removeLayer(this.hotkeyLayer);
     }
 
     increaseSelectedIndex() {
