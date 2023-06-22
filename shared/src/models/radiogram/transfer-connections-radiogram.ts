@@ -36,7 +36,7 @@ export class TransferConnectionsRadiogram implements Radiogram {
 
     @IsString()
     @ValidateIf((_, value) => value !== null)
-    public readonly key!: string | null;
+    public readonly key: string | null;
 
     @IsStringMap(Number)
     public readonly connectedRegions: { [key: UUID]: number } = {};
