@@ -5,7 +5,11 @@ import type {
     PersonnelCountRadiogram,
     VehicleCountRadiogram,
 } from '../../models/radiogram';
-import { getActivityById, getElement } from '../../store/action-reducers/utils';
+import {
+    getActivityById,
+    getElement,
+    getElementByPredicate,
+} from '../../store/action-reducers/utils';
 import type { Mutable } from '../../utils';
 import { StrictObject, UUID, uuid, uuidValidationOptions } from '../../utils';
 import { IsValue } from '../../utils/validators';
@@ -14,10 +18,15 @@ import type { ExerciseState } from '../../state';
 import { nextUUID } from '../utils/randomness';
 import { getCreate } from '../../models/utils/get-create';
 import type { PersonnelType } from '../../models/utils/personnel-type';
-import { isInSpecificSimulatedRegion } from '../../models/utils/position/position-helpers';
+import {
+    currentSimulatedRegionIdOf,
+    isInSimulatedRegion,
+    isInSpecificSimulatedRegion,
+} from '../../models/utils/position/position-helpers';
 import type { SimulatedRegion } from '../../models/simulated-region';
 import { addActivity } from '../activities/utils';
 import { DelayEventActivityState } from '../activities/delay-event';
+import type { TransferConnectionsRadiogram } from '../../models/radiogram/transfer-connections-radiogram';
 import type {
     SimulationBehavior,
     SimulationBehaviorState,
@@ -111,12 +120,13 @@ export const assignLeaderBehavior: SimulationBehavior<AssignLeaderBehaviorState>
                     }
                     break;
                 case 'collectInformationEvent':
-                    // This behavior answerers queries for material, personnel and vehicles because the leader typically holds those information
+                    // This behavior answerers queries because the leader typically holds the respective information
                     {
                         // If there is no leader queries cant be answered
                         if (!behaviorState.leaderId) {
                             return;
                         }
+
                         switch (event.informationType) {
                             case 'materialCount':
                                 {
@@ -199,6 +209,62 @@ export const assignLeaderBehavior: SimulationBehavior<AssignLeaderBehaviorState>
                                     radiogram.informationAvailable = true;
                                 }
                                 break;
+                            case 'transferConnections': {
+                                const radiogram = getActivityById(
+                                    draftState,
+                                    simulatedRegion.id,
+                                    event.generateReportActivityId,
+                                    'generateReportActivity'
+                                )
+                                    .radiogram as Mutable<TransferConnectionsRadiogram>;
+
+                                const ownTransferPoint = getElementByPredicate(
+                                    draftState,
+                                    'transferPoint',
+                                    (transferPoint) =>
+                                        isInSpecificSimulatedRegion(
+                                            transferPoint,
+                                            simulatedRegion.id
+                                        )
+                                );
+
+                                const connectedSimulatedRegions =
+                                    Object.fromEntries(
+                                        StrictObject.entries(
+                                            ownTransferPoint.reachableTransferPoints
+                                        )
+                                            .map(
+                                                ([transferPointId, value]) =>
+                                                    [
+                                                        getElement(
+                                                            draftState,
+                                                            'transferPoint',
+                                                            transferPointId
+                                                        ),
+                                                        value.duration,
+                                                    ] as const
+                                            )
+                                            .filter(([transferPoint]) =>
+                                                isInSimulatedRegion(
+                                                    transferPoint
+                                                )
+                                            )
+                                            .map(
+                                                ([transferPoint, duration]) => [
+                                                    currentSimulatedRegionIdOf(
+                                                        transferPoint
+                                                    ),
+                                                    duration,
+                                                ]
+                                            )
+                                    );
+
+                                radiogram.connectedRegions =
+                                    connectedSimulatedRegions;
+                                radiogram.informationAvailable = true;
+
+                                break;
+                            }
                             case 'vehicleCount':
                                 {
                                     const radiogram = getActivityById(

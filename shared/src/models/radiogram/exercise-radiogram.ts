@@ -8,6 +8,7 @@ import { Radiogram } from './radiogram';
 import { TreatmentStatusRadiogram } from './treatment-status-radiogram';
 import { VehicleCountRadiogram } from './vehicle-count-radiogram';
 import { ResourceRequestRadiogram } from './resource-request-radiogram';
+import { TransferConnectionsRadiogram } from './transfer-connections-radiogram';
 import { TransferCountsRadiogram } from './transfer-counts-radiogram';
 import { TransferCategoryCompletedRadiogram } from './transfer-category-completed-radiogram';
 import { NewPatientDataRequestedRadiogram } from './new-patient-data-requested-radiogram';
@@ -19,6 +20,7 @@ export const radiograms = {
     PersonnelCountRadiogram,
     ResourceRequestRadiogram,
     TransferCategoryCompletedRadiogram,
+    TransferConnectionsRadiogram,
     TransferCountsRadiogram,
     TreatmentStatusRadiogram,
     VehicleCountRadiogram,
@@ -40,6 +42,7 @@ export const radiogramDictionary: ExerciseRadiogramDictionary = {
     personnelCountRadiogram: PersonnelCountRadiogram,
     resourceRequestRadiogram: ResourceRequestRadiogram,
     transferCategoryCompletedRadiogram: TransferCategoryCompletedRadiogram,
+    transferConnectionsRadiogram: TransferConnectionsRadiogram,
     transferCountsRadiogram: TransferCountsRadiogram,
     treatmentStatusRadiogram: TreatmentStatusRadiogram,
     vehicleCountRadiogram: VehicleCountRadiogram,
@@ -72,6 +75,7 @@ export const radiogramTypeToGermanDictionary: {
     personnelCountRadiogram: 'Personalstatus',
     resourceRequestRadiogram: 'Anfrage von Ressourcen',
     transferCategoryCompletedRadiogram: 'Transport für SK abgeschlossen',
+    transferConnectionsRadiogram: 'Transferverbindungen',
     transferCountsRadiogram: 'Transportstatus',
     treatmentStatusRadiogram: 'Behandlungsphase',
     vehicleCountRadiogram: 'Meldung über Fahrzeuganzahlen',

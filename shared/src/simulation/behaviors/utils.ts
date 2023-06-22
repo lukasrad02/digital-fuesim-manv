@@ -4,6 +4,7 @@ import { MaterialCountRadiogram } from '../../models/radiogram/material-count-ra
 import { PatientCountRadiogram } from '../../models/radiogram/patient-count-radiogram';
 import { PersonnelCountRadiogram } from '../../models/radiogram/personnel-count-radiogram';
 import type { ExerciseRadiogramStatus } from '../../models/radiogram/status/exercise-radiogram-status';
+import { TransferConnectionsRadiogram } from '../../models/radiogram/transfer-connections-radiogram';
 import { TreatmentStatusRadiogram } from '../../models/radiogram/treatment-status-radiogram';
 import { VehicleCountRadiogram } from '../../models/radiogram/vehicle-count-radiogram';
 import type { UUID } from '../../utils';
@@ -17,6 +18,7 @@ export const reportableInformationAllowedValues: AllowedValues<ReportableInforma
         personnelCount: true,
         vehicleCount: true,
         singleRegionTransferCounts: true,
+        transferConnections: true,
         transportManagementTransferCounts: true,
         treatmentStatus: true,
         materialCount: true,
@@ -31,6 +33,7 @@ export type ReportableInformation =
     | 'patientCount'
     | 'personnelCount'
     | 'singleRegionTransferCounts'
+    | 'transferConnections'
     | 'transportManagementTransferCounts'
     | 'treatmentStatus'
     | 'vehicleCount';
@@ -47,6 +50,7 @@ export const createRadiogramMap: {
     personnelCount: PersonnelCountRadiogram.create,
     vehicleCount: VehicleCountRadiogram.create,
     singleRegionTransferCounts: TransferCountsRadiogram.create,
+    transferConnections: TransferConnectionsRadiogram.create,
     transportManagementTransferCounts: TransferCountsRadiogram.create,
     treatmentStatus: TreatmentStatusRadiogram.create,
     materialCount: MaterialCountRadiogram.create,
@@ -75,6 +79,7 @@ export const reportableInformationTypeToGermanNameDictionary: {
     vehicleCount: 'Anzahl an Fahrzeugen',
     personnelCount: 'Anzahl an Rettungskräften',
     materialCount: 'Anzahl an Material',
+    transferConnections: 'Transferverbindungen',
     treatmentStatus: 'Behandlungsstatus',
     singleRegionTransferCounts:
         'Anzahl aus diesem Bereich in Krankenhäuser abtransportierter Patienten',
