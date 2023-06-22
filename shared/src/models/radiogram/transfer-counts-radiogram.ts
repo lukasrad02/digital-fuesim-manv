@@ -1,4 +1,10 @@
-import { IsBoolean, IsUUID, ValidateNested } from 'class-validator';
+import {
+    IsBoolean,
+    IsString,
+    IsUUID,
+    ValidateIf,
+    ValidateNested,
+} from 'class-validator';
 import { UUID, uuidValidationOptions } from '../../utils';
 import { IsLiteralUnion, IsValue } from '../../utils/validators';
 import { IsRadiogramStatus } from '../../utils/validators/is-radiogram-status';
@@ -31,6 +37,10 @@ export class TransferCountsRadiogram implements Radiogram {
 
     @IsBoolean()
     readonly informationAvailable: boolean = false;
+
+    @IsString()
+    @ValidateIf((_, value) => value !== null)
+    public readonly key!: string | null;
 
     @IsResourceDescription(patientStatusAllowedValues)
     readonly transferredPatientsCounts: ResourceDescription<PatientStatus> = {
@@ -67,10 +77,12 @@ export class TransferCountsRadiogram implements Radiogram {
     constructor(
         id: UUID,
         simulatedRegionId: UUID,
+        key: string | null,
         status: ExerciseRadiogramStatus
     ) {
         this.id = id;
         this.simulatedRegionId = simulatedRegionId;
+        this.key = key;
         this.status = status;
     }
 

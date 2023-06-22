@@ -6,6 +6,7 @@ import {
     IsString,
     IsUUID,
     Min,
+    ValidateIf,
     ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -145,6 +146,10 @@ export class CreateReportAction implements Action {
 
     @IsLiteralUnion(reportableInformationAllowedValues)
     public readonly informationType!: ReportableInformation;
+
+    @IsString()
+    @ValidateIf((_, value) => value !== null)
+    public readonly interfaceSignallerKey!: string | null;
 }
 
 export class UpdateReportTreatmentStatusChangesAction implements Action {
@@ -800,7 +805,10 @@ export namespace SimulationActionReducers {
 
     export const createReport: ActionReducer<CreateReportAction> = {
         action: CreateReportAction,
-        reducer(draftState, { simulatedRegionId, informationType }) {
+        reducer(
+            draftState,
+            { simulatedRegionId, informationType, interfaceSignallerKey }
+        ) {
             const simulatedRegion = getElement(
                 draftState,
                 'simulatedRegion',
@@ -808,7 +816,10 @@ export namespace SimulationActionReducers {
             );
             sendSimulationEvent(
                 simulatedRegion,
-                StartCollectingInformationEvent.create(informationType)
+                StartCollectingInformationEvent.create(
+                    informationType,
+                    interfaceSignallerKey
+                )
             );
 
             return draftState;

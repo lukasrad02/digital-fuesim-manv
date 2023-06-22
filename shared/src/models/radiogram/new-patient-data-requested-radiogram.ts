@@ -1,4 +1,10 @@
-import { IsBoolean, IsUUID, ValidateNested } from 'class-validator';
+import {
+    IsBoolean,
+    IsString,
+    IsUUID,
+    ValidateIf,
+    ValidateNested,
+} from 'class-validator';
 import { UUID, uuidValidationOptions } from '../../utils';
 import { IsValue } from '../../utils/validators';
 import { IsRadiogramStatus } from '../../utils/validators/is-radiogram-status';
@@ -26,6 +32,10 @@ export class NewPatientDataRequestedRadiogram implements Radiogram {
 
     @IsBoolean()
     readonly informationAvailable: boolean = true;
+
+    @IsString()
+    @ValidateIf((_, value) => value !== null)
+    public readonly key: string | null = null;
 
     /**
      * @deprecated Use {@link create} instead
