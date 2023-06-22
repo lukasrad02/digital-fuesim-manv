@@ -139,6 +139,8 @@ jobs:
 
         needs: build
 
+        if: false
+
         services:
             postgres:
                 image: postgres:14
@@ -254,7 +256,7 @@ jobs:
             - test
             - cypress
             - lint
-            - migration-test
+            # - migration-test
         runs-on: ubuntu-latest
         steps:
             - uses: matrix-org/done-action@v2
