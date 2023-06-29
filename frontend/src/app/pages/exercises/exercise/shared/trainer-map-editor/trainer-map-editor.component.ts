@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import type {
     ColorCode,
+    PatientStatus,
     UUID,
     VehicleTemplate,
 } from 'digital-fuesim-manv-shared';
@@ -29,7 +30,12 @@ import { simulatedRegionDragTemplates } from '../editor-panel/templates/simulate
  */
 export class TrainerMapEditorComponent {
     public currentCategory: ColorCode = 'X';
-    public readonly categories = ['X', 'Y', 'Z'] as const;
+    public readonly categories = ['green', 'yellow', 'red'] as const;
+    public readonly colorCodeOfCategories = {
+        green: 'X',
+        yellow: 'Y',
+        red: 'Z',
+    } as const;
 
     public readonly vehicleTemplates$ = this.store.select(
         selectVehicleTemplates
@@ -72,9 +78,13 @@ export class TrainerMapEditorComponent {
         openEditImageTemplateModal(this.ngbModalService, mapImageTemplateId);
     }
 
-    public setCurrentCategory(category: ColorCode) {
-        this.currentCategory = category;
+    public setCurrentCategory(category: PatientStatus) {
+        this.currentCategory =
+            this.colorCodeOfCategories[
+                category as Exclude<PatientStatus, 'black' | 'blue' | 'white'>
+            ];
     }
+
     public async vehicleOnMouseDown(
         event: MouseEvent,
         vehicleTemplate: VehicleTemplate
