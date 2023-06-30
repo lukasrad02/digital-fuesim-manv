@@ -49,7 +49,8 @@ export class SearchableDropdownComponent
     );
 
     @Output()
-    public readonly selected: EventEmitter<string> = new EventEmitter();
+    public readonly selected: EventEmitter<SearchableDropdownOption> =
+        new EventEmitter();
 
     @ViewChild('searchInput')
     private readonly searchInput!: ElementRef;
@@ -93,9 +94,7 @@ export class SearchableDropdownComponent
             this.selectedIndex > -1 &&
             this.selectedIndex < this.filteredOptions.length
         ) {
-            this.selected.emit(
-                this.filteredOptions[this.selectedIndex]!.identifier
-            );
+            this.selected.emit(this.filteredOptions[this.selectedIndex]);
         }
     }
 }
