@@ -68,7 +68,7 @@ export class OtherTransferPointTabComponent implements OnInit, OnDestroy {
                             !currentTransferPoint.reachableTransferPoints[key]
                     )
                     .map(([id, transferPoint]) => ({
-                        identifier: id,
+                        key: id,
                         name: TransferPoint.getFullName(transferPoint),
                     }));
             })
