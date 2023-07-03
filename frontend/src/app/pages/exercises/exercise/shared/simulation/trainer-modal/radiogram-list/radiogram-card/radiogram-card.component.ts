@@ -15,6 +15,7 @@ import {
     currentParticipantIdOf,
     isAccepted,
     isDone,
+    isHiddenUnread,
     isUnread,
     UUID,
 } from 'digital-fuesim-manv-shared';
@@ -49,6 +50,7 @@ export class RadiogramCardComponent implements OnInit, OnChanges, OnDestroy {
     @Input() radiogramId!: UUID;
     @Input() shownInSignallerModal = false;
     @Input() first!: boolean;
+    @Input() studyManagerMode = false;
 
     radiogram$!: Observable<ExerciseRadiogram>;
     simulatedRegion$!: Observable<SimulatedRegion | undefined>;
@@ -56,7 +58,12 @@ export class RadiogramCardComponent implements OnInit, OnChanges, OnDestroy {
     ownClientId!: UUID;
 
     status$!: Observable<
-        'done' | 'otherAccepted' | 'ownAccepted' | 'unread' | undefined
+        | 'done'
+        | 'hidden'
+        | 'otherAccepted'
+        | 'ownAccepted'
+        | 'unread'
+        | undefined
     >;
     acceptingClient$!: Observable<Client | undefined>;
 
@@ -101,6 +108,8 @@ export class RadiogramCardComponent implements OnInit, OnChanges, OnDestroy {
 
         this.status$ = this.radiogram$.pipe(
             map((radiogram) => {
+                if (this.studyManagerMode && isHiddenUnread(radiogram))
+                    return 'hidden';
                 if (isUnread(radiogram)) return 'unread';
                 if (isAccepted(radiogram)) {
                     return currentParticipantIdOf(radiogram) ===
@@ -201,6 +210,13 @@ export class RadiogramCardComponent implements OnInit, OnChanges, OnDestroy {
         this.exerciseService.proposeAction({
             type: '[Radiogram] Mark as done',
             clientId: this.ownClientId,
+            radiogramId: this.radiogramId,
+        });
+    }
+
+    makeVisible() {
+        this.exerciseService.proposeAction({
+            type: '[Radiogram] Make visible',
             radiogramId: this.radiogramId,
         });
     }

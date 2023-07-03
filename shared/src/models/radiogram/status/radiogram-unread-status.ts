@@ -1,4 +1,4 @@
-import { IsInt, Min } from 'class-validator';
+import { IsBoolean, IsInt, Min } from 'class-validator';
 import { IsValue } from '../../../utils/validators';
 import { getCreate } from '../../utils/get-create';
 import type { RadiogramStatus } from './radiogram-status';
@@ -10,6 +10,9 @@ export class RadiogramUnreadStatus implements RadiogramStatus {
     @IsInt()
     @Min(0)
     public readonly publishTime: number;
+
+    @IsBoolean()
+    public readonly studyParticipantVisible: boolean = false;
 
     /**
      * @deprecated Use {@link create} instead.

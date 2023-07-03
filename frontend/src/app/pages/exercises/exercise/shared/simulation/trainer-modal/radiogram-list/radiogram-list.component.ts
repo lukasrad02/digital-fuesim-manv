@@ -11,6 +11,7 @@ import {
     StrictObject,
     isUnread,
     isInterfaceSignallerKey,
+    isHiddenUnread,
 } from 'digital-fuesim-manv-shared';
 import type { Observable } from 'rxjs';
 import { map, combineLatest } from 'rxjs';
@@ -32,12 +33,16 @@ export class RadiogramListComponent implements OnInit {
     publishedRadiograms$!: Observable<ExerciseRadiogram[]>;
     visibleRadiograms$!: Observable<ExerciseRadiogram[]>;
 
+    get isStudyManager() {
+        return location.search.toLowerCase().includes('studycontrol');
+    }
+
     constructor(
         private readonly store: Store<AppState>,
         public readonly radiogramListService: RadiogramListService
     ) {}
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.ownClientId = selectStateSnapshot(selectOwnClientId, this.store)!;
 
         this.publishedRadiograms$ = this.store.select(selectRadiograms).pipe(
@@ -86,6 +91,8 @@ export class RadiogramListComponent implements OnInit {
 
         if (isUnread(radiogram) && isInterfaceSignallerKey(radiogram.key))
             return false;
+
+        if (isHiddenUnread(radiogram) && !this.isStudyManager) return false;
 
         return true;
     }

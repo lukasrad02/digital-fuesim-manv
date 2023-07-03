@@ -12,6 +12,13 @@ export function isUnread(radiogram: ExerciseRadiogram) {
     return isUnreadRadiogramStatus(radiogram.status);
 }
 
+export function isHiddenUnread(radiogram: ExerciseRadiogram) {
+    return (
+        isUnreadRadiogramStatus(radiogram.status) &&
+        !radiogram.status.studyParticipantVisible
+    );
+}
+
 export function isAccepted(radiogram: ExerciseRadiogram) {
     return isAcceptedRadiogramStatus(radiogram.status);
 }

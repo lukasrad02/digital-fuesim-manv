@@ -1,6 +1,7 @@
 <div class="d-flex flex-column w-100 h-100">
     <div class="flex-shrink-1 p-4 pb-0">
         <h5>Funksprüche</h5>
+        <h6 *ngIf="isStudyManager" class="text-danger">Studienleiter-Modus</h6>
         <div class="mb-3 form-check form-switch">
             <label class="from-check-label" for="showDoneSwitch">
                 Durchgesagte Funksprüche anzeigen
@@ -44,6 +45,7 @@
             [radiogramId]="radiogram.id"
             [first]="first"
             [shownInSignallerModal]="shownInSignallerModal"
+            [studyManagerMode]="isStudyManager"
         ></app-radiogram-card>
         <ng-template #noRadiograms>
             <div

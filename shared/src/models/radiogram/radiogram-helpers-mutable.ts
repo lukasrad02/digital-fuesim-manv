@@ -1,10 +1,11 @@
 import type { ExerciseState } from '../../state';
 import { getExerciseRadiogramById } from '../../store/action-reducers/utils/get-element';
 import { logRadiogram } from '../../store/action-reducers/utils/log';
-import type { Mutable, UUID } from '../../utils';
+import { cloneDeepMutable, type Mutable, type UUID } from '../../utils';
 import { createRadiogramActionTag } from '../utils/tag-helpers';
 import type { ExerciseRadiogram } from './exercise-radiogram';
 import { publishTimeOf } from './radiogram-helpers';
+import { isUnreadRadiogramStatus } from './status';
 
 export function publishRadiogram(
     draftState: Mutable<ExerciseState>,
@@ -13,6 +14,7 @@ export function publishRadiogram(
     radiogram.status = {
         type: 'unreadRadiogramStatus',
         publishTime: draftState.currentTime,
+        studyParticipantVisible: false,
     };
     draftState.radiograms[radiogram.id] = radiogram;
     logRadiogram(
@@ -74,4 +76,16 @@ export function markRadiogramDone(
         'Der Funkspruch wurde durchgesagt.',
         radiogram.id
     );
+}
+
+export function makeRadiogramVisible(
+    draftState: Mutable<ExerciseState>,
+    radiogramId: UUID
+) {
+    const radiogram = getExerciseRadiogramById(draftState, radiogramId);
+    if (isUnreadRadiogramStatus(radiogram.status)) {
+        const status = cloneDeepMutable(radiogram.status);
+        status.studyParticipantVisible = true;
+        radiogram.status = status;
+    }
 }

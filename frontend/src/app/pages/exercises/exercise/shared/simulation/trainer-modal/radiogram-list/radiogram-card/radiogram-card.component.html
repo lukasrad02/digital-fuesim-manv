@@ -22,15 +22,32 @@
     </div>
     <div class="card-footer">
         <ng-container [ngSwitch]="status$ | async">
-            <ng-container *ngSwitchCase="'unread'">
-                <span>Bereit zur Durchsage</span>
-                <button class="btn btn-primary float-end" (click)="accept()">
-                    Durchsagen
-                    <app-hotkey-indicator
-                        *ngIf="first && shownInSignallerModal"
-                        [hotkey]="acceptHotkey"
-                    />
+            <ng-container *ngSwitchCase="'hidden'">
+                <span class="text-danger">Versteckt</span>
+                <button
+                    class="btn btn-primary float-end"
+                    (click)="makeVisible()"
+                >
+                    Anzeigen
                 </button>
+            </ng-container>
+            <ng-container *ngSwitchCase="'unread'">
+                <ng-container *ngIf="studyManagerMode; else normalMode">
+                    <span class="text-success">Sichtbar</span>
+                </ng-container>
+                <ng-template #normalMode>
+                    <span>Bereit zur Durchsage</span>
+                    <button
+                        class="btn btn-primary float-end"
+                        (click)="accept()"
+                    >
+                        Durchsagen
+                        <app-hotkey-indicator
+                            *ngIf="first && shownInSignallerModal"
+                            [hotkey]="acceptHotkey"
+                        />
+                    </button>
+                </ng-template>
             </ng-container>
             <ng-container *ngSwitchCase="'ownAccepted'">
                 <span class="text-success"

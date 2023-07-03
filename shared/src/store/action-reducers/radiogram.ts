@@ -1,7 +1,8 @@
 import { IsUUID } from 'class-validator';
-import type { ResourceRequestRadiogram } from '../../models/radiogram';
+import { type ResourceRequestRadiogram } from '../../models/radiogram';
 import {
     acceptRadiogram,
+    makeRadiogramVisible,
     markRadiogramDone,
     returnRadiogram,
 } from '../../models/radiogram/radiogram-helpers-mutable';
@@ -52,6 +53,14 @@ export class MarkDoneRadiogramAction implements Action {
     // Migration would be borderline impossible so we save it now, even if we do not need it yet
     @IsUUID(4, uuidValidationOptions)
     public readonly clientId!: UUID;
+}
+
+export class MakeVisibleRadiogramAction implements Action {
+    @IsValue('[Radiogram] Make visible' as const)
+    public readonly type = '[Radiogram] Make visible';
+
+    @IsUUID(4, uuidValidationOptions)
+    public readonly radiogramId!: UUID;
 }
 
 export class AcceptResourceRequestRadiogramAction implements Action {
@@ -134,6 +143,17 @@ export namespace RadiogramActionReducers {
         },
         rights: 'participant',
     };
+
+    export const makeVisibleReducer: ActionReducer<MakeVisibleRadiogramAction> =
+        {
+            action: MakeVisibleRadiogramAction,
+            reducer: (draftState, { radiogramId }) => {
+                makeRadiogramVisible(draftState, radiogramId);
+
+                return draftState;
+            },
+            rights: 'participant',
+        };
 
     export const acceptResourceRequestRadiogramReducer: ActionReducer<AcceptResourceRequestRadiogramAction> =
         {
