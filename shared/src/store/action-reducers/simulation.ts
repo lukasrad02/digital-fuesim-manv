@@ -27,6 +27,7 @@ import {
     ReportableInformation,
     reportableInformationAllowedValues,
     RecurringEventActivityState,
+    TransferVehiclesRequestEvent,
 } from '../../simulation';
 import { StartCollectingInformationEvent } from '../../simulation/events/start-collecting';
 import { sendSimulationEvent } from '../../simulation/events/utils';
@@ -62,6 +63,8 @@ import {
     TransferDestination,
     transferDestinationTypeAllowedValues,
 } from '../../simulation/utils/transfer-destination';
+import { IsResourceDescription } from '../../utils/validators/is-resource-description';
+import { ResourceDescription } from '../../models/utils/resource-description';
 import { getActivityById, getBehaviorById, getElement } from './utils';
 import { logBehavior } from './utils/log';
 
@@ -412,6 +415,26 @@ export class SendTransferRequestEventAction implements Action {
 
     @IsUUIDSet()
     public readonly patients!: UUIDSet;
+}
+
+export class TransferVehiclesAction implements Action {
+    @IsValue('[TransferBehavior] Transfer Vehicles')
+    public readonly type = '[TransferBehavior] Transfer Vehicles';
+
+    @IsUUID(4, uuidValidationOptions)
+    public readonly simulatedRegionId!: UUID;
+
+    @IsUUID(4, uuidValidationOptions)
+    public readonly behaviorId!: UUID;
+
+    @IsResourceDescription()
+    readonly requestedVehicles!: ResourceDescription;
+
+    @IsLiteralUnion(transferDestinationTypeAllowedValues)
+    public readonly destinationType!: TransferDestination;
+
+    @IsUUID(4, uuidValidationOptions)
+    public readonly destinationId!: UUID;
 }
 
 export class ChangeTransportRequestTargetAction implements Action {
@@ -1678,6 +1701,36 @@ export namespace SimulationActionReducers {
             },
             rights: 'trainer',
         };
+
+    export const transferVehicles: ActionReducer<TransferVehiclesAction> = {
+        action: TransferVehiclesAction,
+        reducer(
+            draftState,
+            {
+                simulatedRegionId,
+                requestedVehicles,
+                destinationType,
+                destinationId,
+            }
+        ) {
+            const simulatedRegion = getElement(
+                draftState,
+                'simulatedRegion',
+                simulatedRegionId
+            );
+
+            sendSimulationEvent(
+                simulatedRegion,
+                TransferVehiclesRequestEvent.create(
+                    requestedVehicles,
+                    destinationType,
+                    destinationId
+                )
+            );
+            return draftState;
+        },
+        rights: 'trainer',
+    };
 
     export const changeTransportRequestTarget: ActionReducer<ChangeTransportRequestTargetAction> =
         {
