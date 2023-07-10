@@ -1,4 +1,4 @@
-import { IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsString, IsUUID } from 'class-validator';
 import { UUID, uuid, uuidValidationOptions } from '../utils';
 import { IsValue } from '../utils/validators';
 import { IsIdMap } from '../utils/validators/is-id-map';
@@ -17,6 +17,9 @@ export class AlarmGroup {
 
     @IsIdMap(AlarmGroupVehicle)
     public alarmGroupVehicles: { readonly [key: UUID]: AlarmGroupVehicle } = {};
+
+    @IsBoolean()
+    public readonly sent: boolean = false;
 
     /**
      * @deprecated Use {@link create} instead
