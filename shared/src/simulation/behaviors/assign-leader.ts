@@ -27,11 +27,11 @@ import type { SimulatedRegion } from '../../models/simulated-region';
 import { addActivity } from '../activities/utils';
 import { DelayEventActivityState } from '../activities/delay-event';
 import type { TransferConnectionsRadiogram } from '../../models/radiogram/transfer-connections-radiogram';
+import type { VehicleOccupationsRadiogram } from '../../models/radiogram/vehicle-occupations-radiogram';
 import type {
     SimulationBehavior,
     SimulationBehaviorState,
 } from './simulation-behavior';
-import { VehicleOccupationsRadiogram } from '../../models/radiogram/vehicle-occupations-radiogram';
 
 export class AssignLeaderBehaviorState implements SimulationBehaviorState {
     @IsValue('assignLeaderBehavior' as const)
