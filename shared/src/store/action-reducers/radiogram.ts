@@ -3,6 +3,7 @@ import type { ResourceRequestRadiogram } from '../../models/radiogram';
 import {
     acceptRadiogram,
     markRadiogramDone,
+    returnRadiogram,
 } from '../../models/radiogram/radiogram-helpers-mutable';
 import { VehicleResource } from '../../models/utils/rescue-resource';
 import { VehiclesSentEvent } from '../../simulation';
@@ -31,6 +32,14 @@ export class AcceptRadiogramAction implements Action {
 
     @IsUUID(4, uuidValidationOptions)
     public readonly clientId!: UUID;
+}
+
+export class ReturnRadiogramAction implements Action {
+    @IsValue('[Radiogram] Return radiogram' as const)
+    public readonly type = '[Radiogram] Return radiogram';
+
+    @IsUUID(4, uuidValidationOptions)
+    public readonly radiogramId!: UUID;
 }
 
 export class MarkDoneRadiogramAction implements Action {
@@ -67,6 +76,16 @@ export namespace RadiogramActionReducers {
             action: AcceptRadiogramAction,
             reducer: (draftState, { radiogramId, clientId }) => {
                 acceptRadiogram(draftState, radiogramId, clientId);
+                return draftState;
+            },
+            rights: 'participant',
+        };
+
+    export const returnRadiogramReducer: ActionReducer<ReturnRadiogramAction> =
+        {
+            action: ReturnRadiogramAction,
+            reducer: (draftState, { radiogramId }) => {
+                returnRadiogram(draftState, radiogramId);
                 return draftState;
             },
             rights: 'participant',
