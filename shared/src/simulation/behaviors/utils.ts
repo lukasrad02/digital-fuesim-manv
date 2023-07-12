@@ -10,6 +10,7 @@ import type { ExerciseRadiogramStatus } from '../../models/radiogram/status/exer
 import { TransferConnectionsRadiogram } from '../../models/radiogram/transfer-connections-radiogram';
 import { TreatmentStatusRadiogram } from '../../models/radiogram/treatment-status-radiogram';
 import { VehicleCountRadiogram } from '../../models/radiogram/vehicle-count-radiogram';
+import { VehicleOccupationsRadiogram } from '../../models/radiogram/vehicle-occupations-radiogram';
 import type { UUID } from '../../utils';
 import { StrictObject } from '../../utils';
 import type { AllowedValues } from '../../utils/validators';
@@ -26,6 +27,7 @@ export const reportableInformationAllowedValues: AllowedValues<ReportableInforma
         transportManagementTransferCounts: true,
         treatmentStatus: true,
         vehicleCount: true,
+        vehicleOccupations: true,
     };
 
 export const reportableInformations = StrictObject.keys(
@@ -41,7 +43,8 @@ export type ReportableInformation =
     | 'transferConnections'
     | 'transportManagementTransferCounts'
     | 'treatmentStatus'
-    | 'vehicleCount';
+    | 'vehicleCount'
+    | 'vehicleOccupations';
 
 export const createRadiogramMap: {
     [Key in ReportableInformation]: (
@@ -60,6 +63,7 @@ export const createRadiogramMap: {
     transportManagementTransferCounts: TransferCountsRadiogram.create,
     treatmentStatus: TreatmentStatusRadiogram.create,
     vehicleCount: VehicleCountRadiogram.create,
+    vehicleOccupations: VehicleOccupationsRadiogram.create,
 };
 
 export const behaviorTypeToGermanNameDictionary: {
@@ -92,4 +96,5 @@ export const reportableInformationTypeToGermanNameDictionary: {
         'Anzahl unter dieser Transportorganisation in Krankenhäuser abtransportierter Patienten',
     treatmentStatus: 'Behandlungsstatus',
     vehicleCount: 'Anzahl an Fahrzeugen',
+    vehicleOccupations: 'Nutzung der Fahrzeuge',
 };

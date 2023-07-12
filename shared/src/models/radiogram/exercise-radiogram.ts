@@ -12,6 +12,7 @@ import { TransferConnectionsRadiogram } from './transfer-connections-radiogram';
 import { TransferCountsRadiogram } from './transfer-counts-radiogram';
 import { TransferCategoryCompletedRadiogram } from './transfer-category-completed-radiogram';
 import { NewPatientDataRequestedRadiogram } from './new-patient-data-requested-radiogram';
+import { VehicleOccupationsRadiogram } from './vehicle-occupations-radiogram';
 
 export const radiograms = {
     MaterialCountRadiogram,
@@ -24,6 +25,7 @@ export const radiograms = {
     TransferCountsRadiogram,
     TreatmentStatusRadiogram,
     VehicleCountRadiogram,
+    VehicleOccupationsRadiogram,
     NewPatientDataRequestedRadiogram,
 };
 
@@ -46,6 +48,7 @@ export const radiogramDictionary: ExerciseRadiogramDictionary = {
     transferCountsRadiogram: TransferCountsRadiogram,
     treatmentStatusRadiogram: TreatmentStatusRadiogram,
     vehicleCountRadiogram: VehicleCountRadiogram,
+    vehicleOccupationsRadiogram: VehicleOccupationsRadiogram,
     newPatientDataRequestedRadiogram: NewPatientDataRequestedRadiogram,
 };
 
@@ -79,5 +82,6 @@ export const radiogramTypeToGermanDictionary: {
     transferCountsRadiogram: 'Transportstatus',
     treatmentStatusRadiogram: 'Behandlungsphase',
     vehicleCountRadiogram: 'Meldung über Fahrzeuganzahlen',
+    vehicleOccupationsRadiogram: 'Meldung über Fahrzeugnutzung',
     newPatientDataRequestedRadiogram: 'Anfrage nach Patientenzahlen',
 };
