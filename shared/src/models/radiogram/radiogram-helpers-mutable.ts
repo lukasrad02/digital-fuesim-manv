@@ -52,6 +52,7 @@ export function returnRadiogram(
     radiogram.status = {
         type: 'unreadRadiogramStatus',
         publishTime: publishTimeOf(radiogram),
+        studyParticipantVisible: true,
     };
     logRadiogram(
         draftState,
